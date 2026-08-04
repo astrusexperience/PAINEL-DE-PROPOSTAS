@@ -543,14 +543,33 @@ var USERS = { "admin":"astrus2026" };
   $('btnSave').onclick=function(){saveCurrent(false);};
   $('btnOpen').onclick=function(){saveCurrent(true);window.open('proposta.html?id='+currentId,'_blank');};
   $('btnJson').onclick=function(){dl(JSON.stringify(state,null,2),'proposta-'+slug(state.clientName)+'.json','application/json');};
-  $('btnExport').onclick=function(){
-    fetch('proposta.html').then(function(r){return r.text();}).then(function(txt){
+  function mimeOf(p){var e=p.split('.').pop().toLowerCase();return {svg:'image/svg+xml',webp:'image/webp',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',woff2:'font/woff2',woff:'font/woff'}[e]||'application/octet-stream';}
+  function abToB64(buf){var b=new Uint8Array(buf),s='',c=0x8000;for(var i=0;i<b.length;i+=c){s+=String.fromCharCode.apply(null,b.subarray(i,i+c));}return btoa(s);}
+  function toDataURI(path){return fetch(path).then(function(r){return r.arrayBuffer();}).then(function(buf){return 'data:'+mimeOf(path)+';base64,'+abToB64(buf);});}
+
+  $('btnExport').onclick=async function(){
+    toast('Gerando arquivo…');
+    try{
+      var txt=await fetch('proposta.html').then(function(r){return r.text();});
+      // 1) fontes: embute o fonts.css com os .woff2 em base64
+      try{
+        var css=await fetch('css/fonts.css').then(function(r){return r.text();});
+        var fu=css.match(/\.\.\/fonts\/[A-Za-z0-9]+\.woff2?/g)||[];
+        for(var i=0;i<fu.length;i++){var rel=fu[i].replace('../','');var d=await toDataURI(rel);css=css.split(fu[i]).join(d);}
+        txt=txt.replace(/<link rel="stylesheet" href="css\/fonts\.css"[^>]*>/,'<style>'+css+'</style>');
+      }catch(e){}
+      // 2) injeta os dados desta proposta
       var json=JSON.stringify(state).replace(/</g,'\\u003c');
       var inject='<script id="prop-override">window.PROPOSTA_OVERRIDE = '+json+';<\/script>';
       if(txt.indexOf('id="prop-override"')>=0){txt=txt.replace(/<script id="prop-override">[\s\S]*?<\/script>/,inject);}
       else{txt=txt.replace('</body>',inject+'\n</body>');}
-      dl(txt,'proposta-'+slug(state.clientName)+'.html','text/html');toast('Proposta baixada ✓');
-    });
+      // 3) embute todas as imagens locais (assets/…) em base64
+      var found={};(txt.match(/assets\/[A-Za-z0-9_\/.-]+\.(?:svg|webp|jpe?g|png)/g)||[]).forEach(function(p){found[p]=1;});
+      var keys=Object.keys(found);
+      for(var j=0;j<keys.length;j++){try{var du=await toDataURI(keys[j]);txt=txt.split(keys[j]).join(du);}catch(e){}}
+      dl(txt,'proposta-'+slug(state.clientName)+'.html','text/html');
+      toast('Arquivo único pronto ✓');
+    }catch(e){toast('Erro ao gerar o arquivo');}
   };
   document.querySelectorAll('.vp button').forEach(function(b){
     b.onclick=function(){document.querySelectorAll('.vp button').forEach(function(x){x.classList.remove('on');});b.classList.add('on');$('pv').style.width=b.getAttribute('data-w');};
