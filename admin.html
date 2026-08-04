@@ -402,13 +402,21 @@ var USERS = { "admin":"astrus2026" };
     s2._in.appendChild(stringList(state.toItems,'Adicionar ponto'));
     form.appendChild(s2);
 
-    var s3=sectionEl('3','Cases do segmento (carrossel)');
+    var sp=sectionEl('3','Plano estratégico (roadmap)');
+    sp._in.appendChild(fld('Título da seção','planoTitle',{area:true,hint:'Aceita HTML e <code>{cliente}</code>.'}));
+    sp._in.appendChild(fld('Texto de introdução','planoLead',{area:true}));
+    sp._in.appendChild(grpLabel('Etapas do plano'));
+    state.plan=state.plan||[];
+    sp._in.appendChild(planList(state.plan));
+    form.appendChild(sp);
+
+    var s3=sectionEl('4','Cases do segmento (carrossel)');
     s3._in.appendChild(fld('Texto de introdução','casesLead',{area:true,hint:'Aceita HTML e <code>{cliente}</code>.'}));
     state.cases=state.cases||[];
     s3._in.appendChild(casesEditor(state.cases));
     form.appendChild(s3);
 
-    var s4=sectionEl('4','Resultados & Fotos');
+    var s4=sectionEl('5','Resultados & Fotos');
     s4._in.appendChild(grpLabel('Números (contadores)'));
     s4._in.appendChild(statList(state.stats));
     s4._in.appendChild(grpLabel('Fotos de resultado'));
@@ -416,16 +424,16 @@ var USERS = { "admin":"astrus2026" };
     s4._in.appendChild(photoEditor(state.resultPhotos));
     form.appendChild(s4);
 
-    var s5=sectionEl('5','Escopo / Entregáveis');
+    var s5=sectionEl('6','Escopo / Entregáveis');
     s5._in.appendChild(scopeList(state.scope));
     form.appendChild(s5);
 
-    var s6=sectionEl('6','Investimento (pacotes)');
+    var s6=sectionEl('7','Investimento (pacotes)');
     s6._in.appendChild(pkgList(state.packages));
     s6._in.appendChild(fld('Observação (rodapé dos preços)','investNote',{area:true}));
     form.appendChild(s6);
 
-    var s7=sectionEl('7','Chamada final & Contato');
+    var s7=sectionEl('8','Chamada final & Contato');
     s7._in.appendChild(fld('Título do CTA','ctaTitle',{area:true,hint:'Aceita HTML e <code>{cliente}</code>.'}));
     s7._in.appendChild(fld('Texto do CTA','ctaText',{area:true}));
     s7._in.appendChild(fld('WhatsApp (só números, com DDI)','whatsapp',{ph:'5535991409445'}));
@@ -490,6 +498,34 @@ var USERS = { "admin":"astrus2026" };
       var add=document.createElement('button');add.className='add';add.textContent='+ Adicionar pacote';
       add.onclick=function(){arr.push({name:'Novo pacote',desc:'',price:'0.000',per:'/mês',featured:false,btn:'Escolher',features:['']});render();pushLive();};
       box.appendChild(add);
+    }
+    render();return box;
+  }
+  var ICONS=[['assets/icons/crosshair.svg','Alvo / Diagnóstico'],['assets/icons/sparkle.svg','Brilho / Marca'],['assets/icons/clipboard-text.svg','Prancheta / Planejamento'],['assets/icons/lightning.svg','Raio / Campanha'],['assets/icons/chats-circle.svg','Balões / Redes'],['assets/icons/map-pin.svg','Pin / Local · Google'],['assets/icons/target.svg','Alvo / Tráfego'],['assets/icons/rocket-launch.svg','Foguete / Lançamento'],['assets/icons/chart-line-up.svg','Gráfico / Crescimento'],['assets/icons/users.svg','Pessoas / Público'],['assets/icons/handshake.svg','Aperto de mão'],['assets/icons/star.svg','Estrela'],['assets/icons/trophy.svg','Troféu / Autoridade'],['assets/icons/pen-nib.svg','Caneta / Design'],['assets/icons/browser.svg','Navegador / Site'],['assets/icons/video-camera.svg','Câmera / Vídeo'],['assets/icons/key.svg','Chave / Acesso'],['assets/icons/package.svg','Caixa / Pacote'],['assets/icons/currency-circle-dollar.svg','Cifrão / Vendas'],['assets/icons/device-mobile-camera.svg','Celular / Mobile']];
+  function iconSelect(label,obj,key){
+    var w=document.createElement('div');w.className='fld';
+    var l=document.createElement('label');l.textContent=label;w.appendChild(l);
+    var sel=document.createElement('select');sel.className='in';
+    ICONS.forEach(function(o){var op=document.createElement('option');op.value=o[0];op.textContent=o[1];if(obj[key]===o[0])op.selected=true;sel.appendChild(op);});
+    if(obj[key] && !ICONS.some(function(o){return o[0]===obj[key];})){var op=document.createElement('option');op.value=obj[key];op.textContent=obj[key];op.selected=true;sel.appendChild(op);}
+    sel.addEventListener('change',function(){obj[key]=sel.value;pushLive();});
+    w.appendChild(sel);return w;
+  }
+  function planList(arr){
+    var box=document.createElement('div');box.className='list';
+    function render(){box.innerHTML='';
+      arr.forEach(function(p,i){
+        var it=document.createElement('div');it.className='item';
+        it.appendChild(iconSelect('Ícone',p,'icon'));
+        it.appendChild(fObj('Título da etapa',p,'title'));
+        it.appendChild(fObj('Descrição',p,'desc',{area:true}));
+        it.appendChild(grpLabel('Pilares (tags)'));
+        p.bullets=p.bullets||[];it.appendChild(stringList(p.bullets,'Adicionar pilar'));
+        var del=document.createElement('button');del.className='del';del.innerHTML='×';del.onclick=function(){arr.splice(i,1);render();pushLive();};
+        it.appendChild(del);box.appendChild(it);
+      });
+      var add=document.createElement('button');add.className='add';add.textContent='+ Adicionar etapa';
+      add.onclick=function(){arr.push({icon:'assets/icons/sparkle.svg',title:'Nova etapa',desc:'',bullets:['']});render();pushLive();};box.appendChild(add);
     }
     render();return box;
   }
