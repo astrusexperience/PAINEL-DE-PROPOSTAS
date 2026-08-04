@@ -795,6 +795,7 @@ window.PROPOSTA_DEFAULT = {
   eyebrow:"Proposta Comercial · Astrus Experience",
   pill:"Marketing 360°",
   topWa:"https://w.app/astrusexperience",
+  show:{transformacao:true,solucao:true,plano:true,trafego:true,estrutura:true,cases:true,processo:true,resultados:true,escopo:true,investimento:true},
   headlineL1:"Mais assinantes. Mais reconhecimento.",
   headlineL2:"A virada da {cliente}.",
   sub:"Um plano de marketing 360° para transformar a {cliente} na provedora mais lembrada da região — movimentando redes sociais, mídias físicas e digitais, anúncios patrocinados e ativações de marca para atrair novos assinantes de forma constante.",
@@ -864,6 +865,8 @@ window.applyProposta = function(cfg){
   var H=function(id,htm){var el=document.getElementById(id);if(el)el.innerHTML=htm;};
   var A=function(id,at,v){var el=document.getElementById(id);if(el)el.setAttribute(at,v);};
   document.title='Proposta Comercial · '+name+' — Astrus Experience';
+  var sh=c.show||{};
+  ['transformacao','solucao','plano','trafego','estrutura','cases','processo','resultados','escopo','investimento'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display=(sh[id]===false)?'none':'';});
   S('pTopTag', name+' · Proposta');
   A('pTopWa','href', c.topWa);
   H('pEyebrow','<span class="dot"></span>'+R(c.eyebrow));

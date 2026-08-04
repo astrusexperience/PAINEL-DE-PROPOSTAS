@@ -378,8 +378,29 @@ var USERS = { "admin":"astrus2026" };
   }
   function readImg(file,cb){var rd=new FileReader();rd.onload=function(){cb(rd.result);};rd.readAsDataURL(file);}
 
+  function sectionToggles(){
+    var defs=[['transformacao','Transformação (De → Para)'],['solucao','Solução · Marketing 360°'],['plano','Plano estratégico'],['trafego','Destaque · Tráfego pago'],['estrutura','Estrutura / Equipamentos'],['cases','Cases do segmento'],['processo','Processo · Como trabalhamos'],['resultados','Resultados & Fotos'],['escopo','Escopo / Entregáveis'],['investimento','Investimento']];
+    state.show=state.show||{};
+    var box=document.createElement('div');box.className='list';
+    defs.forEach(function(d){
+      var row=document.createElement('label');row.className='sw';
+      row.style.cssText='justify-content:space-between;border:1px solid var(--card-brd);border-radius:10px;padding:11px 13px;margin:0';
+      var span=document.createElement('span');span.textContent=d[1];span.style.color='var(--ink)';
+      var cb=document.createElement('input');cb.type='checkbox';cb.checked=state.show[d[0]]!==false;
+      cb.addEventListener('change',function(){state.show[d[0]]=cb.checked;pushLive();});
+      row.appendChild(span);row.appendChild(cb);box.appendChild(row);
+    });
+    return box;
+  }
+
   function build(){
     form.innerHTML='';
+
+    var s0=sectionEl('◐','Seções visíveis',false);
+    var h0=document.createElement('div');h0.className='hint';h0.style.marginBottom='10px';h0.textContent='Desligue para remover a seção inteira desta proposta (a capa é sempre exibida).';
+    s0._in.appendChild(h0);
+    s0._in.appendChild(sectionToggles());
+    form.appendChild(s0);
 
     var s1=sectionEl('1','Cliente & Capa',true);
     s1._in.appendChild(fld('Nome do cliente','clientName'));
