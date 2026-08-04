@@ -1,0 +1,13 @@
+/* ============ CLASH DISPLAY (títulos / display) — self-hosted ============ */
+@font-face{font-family:'Clash Display';src:url('../fonts/BSY64LPTT3OPLVKAZKL3AHKRWZ3D74AC.woff2') format('woff2');font-weight:400;font-display:swap;font-style:normal}
+@font-face{font-family:'Clash Display';src:url('../fonts/JTSL5QESUXATU47LCPUNHZQBDDIWDOSW.woff2') format('woff2');font-weight:500;font-display:swap;font-style:normal}
+@font-face{font-family:'Clash Display';src:url('../fonts/Z3MGHFHX6DCTLQ55LJYRJ5MDCZPMFZU6.woff2') format('woff2');font-weight:600;font-display:swap;font-style:normal}
+@font-face{font-family:'Clash Display';src:url('../fonts/53RZKGODFYDW3QHTIL7IPOWTBCSUEZK7.woff2') format('woff2');font-weight:700;font-display:swap;font-style:normal}
+
+/* ============ SATOSHI (fallback local de corpo, offline) ============ */
+@font-face{font-family:'Satoshi';src:url('../fonts/KFIAZD4RUMEZIYV6FQ3T3GP5PDBDB6JY.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Satoshi';src:url('../fonts/7AHDUZ4A7LFLVFUIFSARGIWCRQJHISQP.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Satoshi';src:url('../fonts/GHM6WVH6MILNYOOCXHXB5GTSGNTMGXZR.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'Satoshi';src:url('../fonts/J64QX5IPOHK56I2KYUNBQ5M2XWZEYKYX.woff2') format('woff2');font-weight:900;font-display:swap}
+
+/* DM Sans (corpo) via Google Fonts no <head>; Satoshi = fallback offline. */
